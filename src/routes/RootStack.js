@@ -3,10 +3,16 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
 import {SearchScreen, PicturesScreen, HeartsScreen} from '../screens';
 
+import {DarkTheme} from '../styles';
+
 const Stack = createStackNavigator();
 
 const options = {
   ...TransitionPresets.SlideFromRightIOS,
+  headerShown: false,
+  cardStyle: {
+    backgroundColor: DarkTheme.dark,
+  },
 };
 
 const RootStack = () => {

@@ -1,10 +1,18 @@
 import React from 'react';
-import {View} from 'react-native';
 
-// import { Container } from './styles';
+import {Toolbar, IconButton} from '../../components';
+
+import {Container} from './styles';
 
 const Hearts = () => {
-  return <View />;
+  return (
+    <Container>
+      <Toolbar
+        title="Hearts"
+        actions={[<IconButton icon="ellipsis-vertical-outline" />]}
+      />
+    </Container>
+  );
 };
 
 export default Hearts;
