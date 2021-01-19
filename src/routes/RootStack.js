@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
-import {PicturesProvider} from '../contexts';
+import {SearchProvider, PicturesProvider} from '../contexts';
 
 import {SearchScreen, PicturesScreen, HeartsScreen} from '../screens';
 
@@ -18,7 +18,14 @@ const options = {
 };
 
 const RootStack = () => {
-  const renderSearchScreen = useCallback(() => <SearchScreen />, []);
+  const renderSearchScreen = useCallback(
+    () => (
+      <SearchProvider>
+        <SearchScreen />
+      </SearchProvider>
+    ),
+    [],
+  );
   const renderPicturesScreen = useCallback(
     () => (
       <PicturesProvider>
