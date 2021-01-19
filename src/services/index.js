@@ -1,1 +1,1 @@
-export * from './pictures';
+export * from './unsplash';

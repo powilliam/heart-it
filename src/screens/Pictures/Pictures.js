@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Host} from 'react-native-portalize';
 
-import {PICTURES_DATA} from '../../services';
+import {PicturesContext} from '../../contexts';
 
 import {
   ToolbarLayout,
@@ -14,6 +14,7 @@ import {
 import {Container, FiltersContainer} from './styles';
 
 const Pictures = () => {
+  const {data: pictures, next} = useContext(PicturesContext);
   const navigation = useNavigation();
 
   const navigateToSearchScreen = useCallback(
@@ -44,7 +45,7 @@ const Pictures = () => {
             <TextButton title="Oldest" />
           </FiltersContainer>
         </ToolbarLayout>
-        <PicturesList data={PICTURES_DATA} />
+        <PicturesList data={pictures} onEndReached={next} />
       </Host>
     </Container>
   );
