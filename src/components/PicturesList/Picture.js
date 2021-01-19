@@ -1,4 +1,4 @@
-import React, {Fragment, useRef, useCallback} from 'react';
+import React, {Fragment, useMemo, useRef, useCallback} from 'react';
 import {Dimensions} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {Modalize} from 'react-native-modalize';
@@ -10,10 +10,14 @@ import PictureModalizeHeaderComponent from './PictureModalizeHeaderComponent';
 
 const {width} = Dimensions.get('window');
 
-const Picture = ({uri}) => {
+const Picture = ({data}) => {
   const modalizeRef = useRef();
 
   const {dark_variant, red, yellow} = useTheme();
+
+  const uri = useMemo(() => data.urls.regular, [data]);
+  const author = useMemo(() => data.user, [data]);
+  const description = useMemo(() => data.description, [data]);
 
   const onPressImage = useCallback(() => modalizeRef.current?.open(), [
     modalizeRef,
@@ -38,12 +42,8 @@ const Picture = ({uri}) => {
           }}
           HeaderComponent={() => (
             <PictureModalizeHeaderComponent
-              author={{
-                uri:
-                  'https://images.unsplash.com/photo-1610659838219-45b564583af2?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMnx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-                name: 'Wonderful Woman',
-              }}
-              description="Lorem Ipsum Dolor"
+              author={author}
+              description={description}
             />
           )}>
           <ItemButton icon="heart" iconColor={red} text="Heart it" />

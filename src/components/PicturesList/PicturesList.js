@@ -3,12 +3,12 @@ import {View, FlatList} from 'react-native';
 
 import Picture from './Picture';
 
-const PicturesList = ({data}) => {
+const PicturesList = ({data, onEndReached}) => {
   const renderPictureItem = useCallback(
-    ({item}) => <Picture uri={item.uri} />,
+    ({item}) => <Picture data={item} />,
     [],
   );
-  const pictureKeyExtractor = useCallback((_, index) => index.toString(), []);
+  const pictureKeyExtractor = useCallback((item) => item.id, []);
 
   return (
     <FlatList
@@ -16,6 +16,8 @@ const PicturesList = ({data}) => {
       renderItem={renderPictureItem}
       keyExtractor={pictureKeyExtractor}
       showsVerticalScrollIndicator={false}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
     />
   );
 };
