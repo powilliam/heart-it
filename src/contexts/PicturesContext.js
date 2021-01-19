@@ -6,7 +6,7 @@ import React, {
   createContext,
 } from 'react';
 
-import useUnsplash from '../hooks/useUnsplash';
+import {useUnsplash} from '../hooks';
 
 import {getPictures} from '../services';
 
@@ -17,7 +17,7 @@ const PicturesProvider = ({children}) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    executeAsync(getPictures, {page, per_page: 5});
+    executeAsync(getPictures, {page, per_page: 5}, {preserveState: true});
   }, [page]);
 
   const next = useCallback(() => setPage(page + 1), [page]);

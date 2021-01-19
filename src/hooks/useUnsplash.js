@@ -28,7 +28,9 @@ const reducer = (state, action) => {
     case STATE_STATUS.SUCCESS:
       return {
         status: STATE_STATUS.SUCCESS,
-        data: [...state.data, ...action.data],
+        data: action.preserveState
+          ? [...state.data, ...action.data]
+          : [...action.data],
         loading: false,
         failure: false,
       };
@@ -55,13 +57,14 @@ const useUnsplash = () => {
   });
 
   const executeAsync = useCallback(
-    async (axiosServiceCallback, axiosServiceConfig) => {
+    async (axiosServiceCallback, axiosServiceConfig, onSuccessPayload) => {
       dispatch({type: STATE_STATUS.PENDING});
       try {
         const {data} = await axiosServiceCallback(axiosServiceConfig);
         dispatch({
           type: STATE_STATUS.SUCCESS,
           data,
+          ...onSuccessPayload,
         });
       } catch (error) {
         dispatch({type: STATE_STATUS.FAILURE});
