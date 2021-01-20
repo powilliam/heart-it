@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  createContext,
-} from 'react';
+import React, {useMemo, useCallback, createContext} from 'react';
 
 import {useUnsplash} from '../hooks';
 
@@ -12,24 +6,56 @@ import {searchPictures} from '../services';
 
 export const SearchContext = createContext();
 
+const handlers = {
+  onSuccess: (state, action) =>
+    action.behavior.preserve
+      ? {
+          ...action.resolved,
+          results: [...state.data.results, ...action.resolved.results],
+        }
+      : {...action.resolved},
+};
+
+const initialState = {
+  data: {
+    results: [],
+  },
+};
+
 const SearchProvider = ({children}) => {
-  const [state, executeAsync] = useUnsplash();
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const [state, execute] = useUnsplash(handlers, initialState);
 
   const next = useCallback(() => {
-    setPage(page + 1);
-    executeAsync(
-      searchPictures,
-      {query, page: page + 1},
-      {preserveState: true},
+    execute(
+      async (internalState) => {
+        const {data} = await searchPictures({
+          query: internalState.data.query,
+          page: internalState.page + 1,
+        });
+        return data;
+      },
+      {preserve: true, incremental: true},
     );
-  }, [page, query]);
-  const search = useCallback((query) => {
-    setQuery(query);
-    setPage(1);
-    executeAsync(searchPictures, {query, page: 1});
-  }, []);
+  }, [execute]);
+  const search = useCallback(
+    (query) => {
+      query &&
+        execute(
+          async (_) => {
+            const {data} = await searchPictures({
+              query,
+              page: 1,
+            });
+            return {
+              query,
+              ...data,
+            };
+          },
+          {reset: true},
+        );
+    },
+    [execute],
+  );
 
   const value = useMemo(() => ({...state, next, search}), [
     state,
