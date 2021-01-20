@@ -1,1 +1,1 @@
-export {default as useUnsplash} from './useUnsplash';
+export {default as useUnsplash, STATE_STATUS} from './useUnsplash';

@@ -1,46 +1,58 @@
 import {useReducer, useCallback} from 'react';
 
-const STATE_STATUS = {
+export const STATE_STATUS = {
   IDLE: 'IDLE',
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',
   FAILURE: 'FAILURE',
 };
 
-const reducer = (state, action) => {
+const reducer = (state, action) => ({
+  onIdle,
+  onPending,
+  onSuccess,
+  onFailure,
+}) => {
   switch (action.type) {
     case STATE_STATUS.IDLE:
       return {
         ...state,
-        status: STATE_STATUS.IDLE,
+        status: action.type,
         loading: false,
         failure: false,
+        data: onIdle ? onIdle(state, action) : state.data,
       };
 
     case STATE_STATUS.PENDING:
       return {
-        status: STATE_STATUS.PENDING,
-        data: state.data.length > 0 ? [...state.data] : [],
+        ...state,
+        status: action.type,
         loading: true,
         failure: false,
+        data: onPending ? onPending(state, action) : state.data,
       };
 
     case STATE_STATUS.SUCCESS:
       return {
-        status: STATE_STATUS.SUCCESS,
-        data: action.preserveState
-          ? [...state.data, ...action.data]
-          : [...action.data],
+        ...state,
+        status: action.type,
         loading: false,
         failure: false,
+        page: action.behavior.incremental
+          ? state.page + 1
+          : action.behavior.reset
+          ? 1
+          : state.page,
+        data: onSuccess ? onSuccess(state, action) : state.data,
       };
 
     case STATE_STATUS.FAILURE:
       return {
         ...state,
-        status: STATE_STATUS.FAILURE,
-        failure: true,
+        status: action.type,
         loading: false,
+        failure: true,
+        data: onFailure ? onFailure(state, action) : state.data,
       };
 
     default:
@@ -48,34 +60,37 @@ const reducer = (state, action) => {
   }
 };
 
-const useUnsplash = () => {
-  const [state, dispatch] = useReducer(reducer, {
-    status: STATE_STATUS.IDLE,
-    data: [],
-    loading: false,
-    failure: false,
-  });
+const defaultState = {
+  status: STATE_STATUS.IDLE,
+  page: 1,
+};
 
-  const executeAsync = useCallback(
-    async (axiosServiceCallback, axiosServiceConfig, onSuccessPayload) => {
-      dispatch({type: STATE_STATUS.PENDING});
-      try {
-        const {data} = await axiosServiceCallback(axiosServiceConfig);
-        dispatch({
-          type: STATE_STATUS.SUCCESS,
-          data,
-          ...onSuccessPayload,
-        });
-      } catch (error) {
-        dispatch({type: STATE_STATUS.FAILURE});
-      } finally {
-        dispatch({type: STATE_STATUS.IDLE});
-      }
-    },
-    [],
+const useUnsplash = (handlers, initialState) => {
+  const [state, dispatch] = useReducer(
+    (state, action) => reducer(state, action)(handlers),
+    {...defaultState, ...initialState},
   );
 
-  return [state, executeAsync];
+  const execute = useCallback(
+    async (resolver, behavior) => {
+      dispatch({type: STATE_STATUS.PENDING, behavior});
+      try {
+        const resolved = await resolver(state);
+        dispatch({
+          type: STATE_STATUS.SUCCESS,
+          resolved,
+          behavior,
+        });
+      } catch (error) {
+        dispatch({type: STATE_STATUS.FAILURE, behavior});
+      } finally {
+        dispatch({type: STATE_STATUS.IDLE, behavior});
+      }
+    },
+    [state],
+  );
+
+  return [state, execute];
 };
 
 export default useUnsplash;

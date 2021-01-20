@@ -1,4 +1,4 @@
-import React, {useRef, useContext, useCallback} from 'react';
+import React, {useRef, useContext, useCallback, useMemo} from 'react';
 import {Keyboard} from 'react-native';
 import {Host} from 'react-native-portalize';
 import {useTheme} from 'styled-components';
@@ -11,8 +11,10 @@ import {Container, SearchContainer, SearchInput} from './styles';
 
 const Search = () => {
   const searchRef = useRef({query: ''});
-  const {data: pictures, next, search} = useContext(SearchContext);
+  const {data, next, search} = useContext(SearchContext);
   const {light_with_opacity_of_40} = useTheme();
+
+  const pictures = useMemo(() => data.results, [data]);
 
   const submit = useCallback(() => {
     Keyboard.dismiss();

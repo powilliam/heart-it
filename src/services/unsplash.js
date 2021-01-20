@@ -15,11 +15,7 @@ const DEFAULT_PARAMS = {
 export const getPictures = async ({order_by, ...DEFAULT_PARAMS}) =>
   await unsplash.get('photos', {params: DEFAULT_PARAMS, order_by});
 
-export const searchPictures = async ({query, order_by, ...DEFAULT_PARAMS}) => {
-  const {
-    data: {results},
-  } = await unsplash.get('search/photos', {
+export const searchPictures = async ({query, order_by, ...DEFAULT_PARAMS}) =>
+  await unsplash.get('search/photos', {
     params: {query, order_by, ...DEFAULT_PARAMS},
   });
-  return {data: results};
-};
