@@ -2,7 +2,7 @@ import React, {useCallback, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Host} from 'react-native-portalize';
 
-import {PicturesContext} from '../../contexts';
+import {PicturesContext, PICTURES_FILTER} from '../../contexts';
 
 import {
   ToolbarLayout,
@@ -14,7 +14,9 @@ import {
 import {Container, FiltersContainer} from './styles';
 
 const Pictures = () => {
-  const {data: pictures, next} = useContext(PicturesContext);
+  const {data: pictures, next, refreshState, filter} = useContext(
+    PicturesContext,
+  );
   const navigation = useNavigation();
 
   const navigateToSearchScreen = useCallback(
@@ -24,6 +26,18 @@ const Pictures = () => {
   const navigateToHeartsScreen = useCallback(
     () => navigation.navigate('Hearts'),
     [navigation],
+  );
+  const onPressPopular = useCallback(
+    () => refreshState(PICTURES_FILTER.POPULAR),
+    [refreshState],
+  );
+  const onPressLatest = useCallback(
+    () => refreshState(PICTURES_FILTER.LATEST),
+    [refreshState],
+  );
+  const onPressOldest = useCallback(
+    () => refreshState(PICTURES_FILTER.OLDEST),
+    [refreshState],
   );
 
   return (
@@ -40,9 +54,21 @@ const Pictures = () => {
             />,
           ]}>
           <FiltersContainer>
-            <TextButton title="Popular" active onPress={() => {}} />
-            <TextButton title="Latest" />
-            <TextButton title="Oldest" />
+            <TextButton
+              title="Popular"
+              active={filter === PICTURES_FILTER.POPULAR}
+              onPress={onPressPopular}
+            />
+            <TextButton
+              title="Latest"
+              active={filter === PICTURES_FILTER.LATEST}
+              onPress={onPressLatest}
+            />
+            <TextButton
+              title="Oldest"
+              active={filter === PICTURES_FILTER.OLDEST}
+              onPress={onPressOldest}
+            />
           </FiltersContainer>
         </ToolbarLayout>
         <PicturesList data={pictures} onEndReached={next} />

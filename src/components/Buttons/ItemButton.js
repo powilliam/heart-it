@@ -15,9 +15,9 @@ const ItemButton = ({icon, iconColor, text, description, checked, onPress}) => {
         <Content>
           <Ionicons name={icon} color={iconColor || light} size={24} />
           <View>
-            <Body1 ml="16px">{text}</Body1>
+            <Body1 ml={icon && '16px'}>{text}</Body1>
             {description && (
-              <Body2 ml="16px" mt="4px">
+              <Body2 ml={icon && '16px'} mt="4px">
                 {description}
               </Body2>
             )}
