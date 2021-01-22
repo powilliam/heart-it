@@ -9,3 +9,4 @@ export {
   SearchContext,
   SEARCH_FILTER,
 } from './SearchContext';
+export {default as HeartsProvider, HeartsContext} from './HeartsContext';
