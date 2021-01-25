@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {View, FlatList} from 'react-native';
+import {FlatList} from 'react-native';
 
 import Picture from './Picture';
 

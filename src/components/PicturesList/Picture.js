@@ -41,7 +41,7 @@ const Picture = ({data}) => {
   });
 
   const id = useMemo(() => data.id, [data]);
-  const uri = useMemo(() => data.urls.regular, [data]);
+  const uri = useMemo(() => data.urls.small, [data]);
   const author = useMemo(() => data.user, [data]);
   const description = useMemo(() => data.description, [data]);
 
