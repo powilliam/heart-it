@@ -8,6 +8,8 @@ target 'Heartit' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
   target 'HeartitTests' do
     inherit! :complete
     # Pods for testing
@@ -21,6 +23,11 @@ target 'Heartit' do
   post_install do |installer|
     flipper_post_install(installer)
   end
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
 end
 
 target 'Heartit-tvOS' do
