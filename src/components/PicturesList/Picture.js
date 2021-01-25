@@ -7,12 +7,15 @@ import React, {
   useCallback,
   useContext,
 } from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform, ToastAndroid} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
 import {Q} from '@nozbe/watermelondb';
 import {useRoute} from '@react-navigation/native';
+import RNFetchBlob from 'rn-fetch-blob';
+import {save} from '@react-native-community/cameraroll';
+import {PERMISSIONS, requestMultiple} from 'react-native-permissions';
 import styled, {useTheme} from 'styled-components/native';
 
 import {HeartsContext} from '../../contexts';
@@ -21,6 +24,10 @@ import {ItemButton} from '../Buttons';
 import PictureModalizeHeaderComponent from './PictureModalizeHeaderComponent';
 
 const {width} = Dimensions.get('window');
+const permissions = Platform.select({
+  ios: [PERMISSIONS.IOS.PHOTO_LIBRARY, PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY],
+  android: [PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE],
+});
 
 const Picture = ({data}) => {
   const modalizeRef = useRef();
@@ -72,6 +79,33 @@ const Picture = ({data}) => {
     name,
   ]);
 
+  const onPressDownloadit = useCallback(async () => {
+    await requestMultiple(permissions);
+    try {
+      if (Platform.OS === 'android')
+        ToastAndroid.showWithGravity(
+          'Downloading',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      const {data} = await RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'png',
+      }).fetch('GET', uri);
+      await save(data, {
+        album: 'Heart it',
+        type: 'photo',
+      });
+    } finally {
+      if (Platform.OS === 'android')
+        ToastAndroid.showWithGravity(
+          'Downloaded',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+    }
+  }, [uri]);
+
   return (
     <Fragment>
       <RectButton onPress={onPressImage} rippleColor={dark_variant}>
@@ -102,7 +136,11 @@ const Picture = ({data}) => {
             onPress={onPressHeartit}
             checked={hearted}
           />
-          <ItemButton icon="cloud-download-outline" text="Download" />
+          <ItemButton
+            icon="cloud-download-outline"
+            text="Download it"
+            onPress={onPressDownloadit}
+          />
           <ItemButton
             icon="logo-chrome"
             iconColor={yellow}
