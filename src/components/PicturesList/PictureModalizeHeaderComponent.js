@@ -13,11 +13,11 @@ const PictureModalizeHeaderComponent = ({author, description}) => {
       <AuthorImage resizeMode="cover" resizeMethod="scale" source={{uri}} />
       <View>
         <Caption ml="16px">{name}</Caption>
-        {description && (
+        {description ? (
           <Body1 ml="16px" mr="16px" mt="4px" numberOfLines={1}>
             {description}
           </Body1>
-        )}
+        ) : null}
       </View>
     </Container>
   );

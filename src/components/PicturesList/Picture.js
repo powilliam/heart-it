@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useContext,
 } from 'react';
-import {Dimensions, Platform, ToastAndroid} from 'react-native';
+import {Dimensions, Platform, ToastAndroid, Linking} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
@@ -51,6 +51,7 @@ const Picture = ({data}) => {
   const uri = useMemo(() => data.urls.small, [data]);
   const author = useMemo(() => data.user, [data]);
   const description = useMemo(() => data.description, [data]);
+  const html = useMemo(() => data.links.html, [data]);
 
   const onPressImage = useCallback(() => modalizeRef.current?.open(), [
     modalizeRef,
@@ -65,6 +66,7 @@ const Picture = ({data}) => {
         source: uri,
         author_name: author.name,
         author_source: author.profile_image.medium,
+        browser_source: html,
       });
     }
   }, [
@@ -77,8 +79,8 @@ const Picture = ({data}) => {
     description,
     modalizeRef,
     name,
+    html,
   ]);
-
   const onPressDownloadit = useCallback(async () => {
     await requestMultiple(permissions);
     try {
@@ -105,6 +107,10 @@ const Picture = ({data}) => {
         );
     }
   }, [uri]);
+  const onPressOpenInTheBrowser = useCallback(async () => {
+    if (!(await Linking.canOpenURL(html))) return;
+    await Linking.openURL(html);
+  }, [html]);
 
   return (
     <Fragment>
@@ -145,6 +151,7 @@ const Picture = ({data}) => {
             icon="logo-chrome"
             iconColor={yellow}
             text="Open in the browser"
+            onPress={onPressOpenInTheBrowser}
           />
         </Modalize>
       </Portal>
