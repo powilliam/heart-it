@@ -1,7 +1,7 @@
 import {schemaMigrations} from '@nozbe/watermelondb/Schema/migrations';
 
-import {MIGRATE_HEARTS_TO_VERSION_2} from './models';
+import {CreateHeartsTableToVersion03} from './migrations';
 
 export default schemaMigrations({
-  migrations: [MIGRATE_HEARTS_TO_VERSION_2],
+  migrations: [CreateHeartsTableToVersion03],
 });
