@@ -12,10 +12,12 @@ const PictureModalizeHeaderComponent = ({author, description}) => {
     <Container>
       <AuthorImage resizeMode="cover" resizeMethod="scale" source={{uri}} />
       <View>
-        <Caption ml="16px" mb="4px">
-          {name}
-        </Caption>
-        <Body1 ml="16px">{description}</Body1>
+        <Caption ml="16px">{name}</Caption>
+        {description && (
+          <Body1 ml="16px" mr="16px" mt="4px" numberOfLines={1}>
+            {description}
+          </Body1>
+        )}
       </View>
     </Container>
   );

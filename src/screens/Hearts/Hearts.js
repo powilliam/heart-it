@@ -14,7 +14,7 @@ const Hearts = ({hearts}) => {
         id: heart._raw.id,
         description: heart._raw.description,
         urls: {
-          regular: heart._raw.source,
+          small: heart._raw.source,
         },
         user: {
           name: heart._raw.author_name,
@@ -29,10 +29,7 @@ const Hearts = ({hearts}) => {
   return (
     <Container>
       <Host>
-        <Toolbar
-          title="Hearts"
-          actions={[<IconButton icon="ellipsis-vertical-outline" />]}
-        />
+        <Toolbar title="Hearts" />
         <PicturesList data={normalizedHearts} />
       </Host>
     </Container>

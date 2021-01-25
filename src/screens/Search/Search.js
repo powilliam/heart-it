@@ -67,8 +67,7 @@ const Search = () => {
           <Modalize
             ref={modalizeRef}
             modalStyle={{backgroundColor: dark_variant}}
-            adjustToContentHeight
-            HeaderComponent={() => <Headline6 m="16px">Filters</Headline6>}>
+            adjustToContentHeight>
             <ItemButton
               text="Relevant"
               checked={filter === SEARCH_FILTER.RELEVANT}
