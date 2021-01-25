@@ -3,7 +3,7 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObervables from '@nozbe/with-observables';
 import {Host} from 'react-native-portalize';
 
-import {Toolbar, IconButton, PicturesList} from '../../components';
+import {Toolbar, PicturesList} from '../../components';
 
 import {Container} from './styles';
 
@@ -23,7 +23,7 @@ const Hearts = ({hearts}) => {
           },
         },
         links: {
-          html: heart.browser_source,
+          html: heart._raw.browser_source,
         },
       })),
     [hearts],
