@@ -22,6 +22,9 @@ const Hearts = ({hearts}) => {
             medium: heart._raw.author_source,
           },
         },
+        links: {
+          html: heart.browser_source,
+        },
       })),
     [hearts],
   );
